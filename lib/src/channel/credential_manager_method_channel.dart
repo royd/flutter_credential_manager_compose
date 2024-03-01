@@ -34,11 +34,19 @@ class MethodChannelCredentialManager extends CredentialManagerPlatform {
   }
 
   @override
-  Future<void> savePasswordCredentials(PasswordCredential credential) async {
+  Future<void> savePasswordCredentials(
+    PasswordCredential credential, {
+    String? origin,
+  }) async {
+    final args = {
+      ...credential.toJson(),
+      'origin': origin,
+    };
+
     try {
       final res = await methodChannel.invokeMethod<String>(
         'save_password_credentials',
-        credential.toJson(),
+        args,
       );
 
       if (res != null && res == "Credentials saved") {
@@ -53,11 +61,19 @@ class MethodChannelCredentialManager extends CredentialManagerPlatform {
   }
 
   @override
-  Future<Credentials> getPasswordCredentials() async {
+  Future<Credentials> getPasswordCredentials({
+    String? origin,
+  }) async {
     bool isGoogleCredentials = false;
+
+    final args = {
+      'origin': origin,
+    };
+
     try {
       final res = await methodChannel.invokeMethod<Map<Object?, Object?>>(
         'get_password_credentials',
+        args,
       );
 
       if (res != null) {
@@ -116,10 +132,17 @@ class MethodChannelCredentialManager extends CredentialManagerPlatform {
   }
 
   @override
-  Future<GoogleIdTokenCredential?> saveGoogleCredential() async {
+  Future<GoogleIdTokenCredential?> saveGoogleCredential({
+    String? origin,
+  }) async {
+    final args = {
+      'origin': origin,
+    };
+
     try {
       final res = await methodChannel.invokeMethod<Map<Object?, Object?>>(
         'save_google_credential',
+        args,
       );
       if (res == null) {
         throw CredentialException(

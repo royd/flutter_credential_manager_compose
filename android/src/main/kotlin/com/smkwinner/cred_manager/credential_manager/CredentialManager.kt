@@ -62,14 +62,16 @@ class CredentialManagerUtils {
     suspend fun savePasswordCredentials(
         username: String,
         password: String,
-        context: Context
+        context: Context,
+        origin: String?
     ): Pair<CredentialManagerExceptions?, String> {
         return try {
             credentialManager.createCredential(
                 request = CreatePasswordRequest(
                     id = username,
                     password = password,
-                    preferImmediatelyAvailableCredentials = preferImmediatelyAvailableCredentials
+                    preferImmediatelyAvailableCredentials = preferImmediatelyAvailableCredentials,
+                    origin = origin,
                 ),
                 context = context
             )
@@ -218,7 +220,7 @@ class CredentialManagerUtils {
      * @return A Pair containing either null and deserialized GoogleIdTokenCredential
      * or CredentialManagerExceptions and null if an error occurs.
      */
-    suspend fun saveGoogleCredentials(context: Context): Pair<CredentialManagerExceptions?, GoogleIdTokenCredential?> {
+    suspend fun saveGoogleCredentials(context: Context, origin: String?): Pair<CredentialManagerExceptions?, GoogleIdTokenCredential?> {
         if (!this::serverClientID.isInitialized) {
             return Pair(
                 CredentialManagerExceptions(
@@ -235,13 +237,16 @@ class CredentialManagerUtils {
             .setServerClientId(serverClientID)
             .build()
 
-        val request: GetCredentialRequest = GetCredentialRequest.Builder()
+        val request = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
-            .build()
+
+        if (origin != null) {
+            request.setOrigin(origin)
+        }
 
         Log.d("CredentialManager", "$request")
         val result = credentialManager.getCredential(
-            request = request,
+            request = request.build(),
             context = context,
         )
 

@@ -27,16 +27,25 @@ class CredentialManager {
   /// [credential] - The password credentials to be saved.
   ///
   /// Returns a [Future] that completes when the credentials are successfully saved.
-  Future<void> savePasswordCredentials(PasswordCredential credential) async {
-    return CredentialManagerPlatform.instance
-        .savePasswordCredentials(credential);
+  Future<void> savePasswordCredentials(
+    PasswordCredential credential, {
+    String? origin,
+  }) async {
+    return CredentialManagerPlatform.instance.savePasswordCredentials(
+      credential,
+      origin: origin,
+    );
   }
 
   /// Gets plain text password credentials.
   ///
   /// Returns a [Future] that completes with [PasswordCredential] representing the retrieved credentials.
-  Future<Credentials> getPasswordCredentials() async {
-    return CredentialManagerPlatform.instance.getPasswordCredentials();
+  Future<Credentials> getPasswordCredentials({
+    String? origin,
+  }) async {
+    return CredentialManagerPlatform.instance.getPasswordCredentials(
+      origin: origin,
+    );
   }
 
   /// Saves encrypted password credentials.
@@ -68,8 +77,12 @@ class CredentialManager {
   }
 
   /// Returns a [Future] that completes when the credentials are successfully saved.
-  Future<GoogleIdTokenCredential?> saveGoogleCredential() async {
-    return CredentialManagerPlatform.instance.saveGoogleCredential();
+  Future<GoogleIdTokenCredential?> saveGoogleCredential({
+    String? origin,
+  }) async {
+    return CredentialManagerPlatform.instance.saveGoogleCredential(
+      origin: origin,
+    );
   }
 
   /// Checks if the Credential Manager is supported on the current platform.

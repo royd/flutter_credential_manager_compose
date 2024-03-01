@@ -33,8 +33,14 @@ abstract class CredentialManagerPlatform extends PlatformInterface {
   }
 
   /// Saves password credentials.
-  Future<void> savePasswordCredentials(PasswordCredential credential) async {
-    return _instance.savePasswordCredentials(credential);
+  Future<void> savePasswordCredentials(
+    PasswordCredential credential, {
+    String? origin,
+  }) async {
+    return _instance.savePasswordCredentials(
+      credential,
+      origin: origin,
+    );
   }
 
   /// Saves encrypted credentials using the provided secret key and initialization vector (IV).
@@ -57,8 +63,12 @@ abstract class CredentialManagerPlatform extends PlatformInterface {
   }
 
   /// Retrieves password credentials.
-  Future<Credentials> getPasswordCredentials() async {
-    return _instance.getPasswordCredentials();
+  Future<Credentials> getPasswordCredentials({
+    String? origin,
+  }) async {
+    return _instance.getPasswordCredentials(
+      origin: origin,
+    );
   }
 
   /// Retrieves the platform version information.
@@ -66,7 +76,11 @@ abstract class CredentialManagerPlatform extends PlatformInterface {
     return _instance.getPlatformVersion();
   }
 
-  Future<GoogleIdTokenCredential?> saveGoogleCredential() async {
-    return _instance.saveGoogleCredential();
+  Future<GoogleIdTokenCredential?> saveGoogleCredential({
+    String? origin,
+  }) async {
+    return _instance.saveGoogleCredential(
+      origin: origin,
+    );
   }
 }
