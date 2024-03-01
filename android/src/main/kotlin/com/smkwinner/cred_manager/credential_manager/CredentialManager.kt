@@ -109,22 +109,25 @@ class CredentialManagerUtils {
      * @return A Pair containing either null and deserialized password credentials
      * or CredentialManagerExceptions and null if no credentials are found or an error occurs.
      */
-    suspend fun getPasswordCredentials(context: Context): Pair<CredentialManagerExceptions?, Pair<PasswordCredentials?, GoogleIdTokenCredential?>> {
+    suspend fun getPasswordCredentials(context: Context, origin: String?): Pair<CredentialManagerExceptions?, Pair<PasswordCredentials?, GoogleIdTokenCredential?>> {
         return try {
-            var getCredRequest = GetCredentialRequest(listOf(GetPasswordOption()))
+            val getCredRequest = GetCredentialRequest.Builder().addCredentialOption(GetPasswordOption())
             if (this::serverClientID.isInitialized) {
                 val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
                     .setNonce(System.currentTimeMillis().toString())
                     .setServerClientId(serverClientID)
                     .build()
-                getCredRequest = GetCredentialRequest.Builder()
-                    .addCredentialOption(googleIdOption).addCredentialOption(GetPasswordOption())
-                    .build()
+
+                getCredRequest.addCredentialOption(googleIdOption)
+            }
+
+            if (origin != null) {
+                getCredRequest.setOrigin(origin)
             }
 
             val credentialResponse = credentialManager.getCredential(
-                request = getCredRequest,
+                request = getCredRequest.build(),
                 context = context
             )
 
